@@ -1,0 +1,40 @@
+#########################################################################################
+# Malicious Callbacks
+#########################################################################################
+callbacks:type:KeBugCheckCallbackListHead
+callbacks:type:CmRegisterCallback
+callbacks:module:UNKNOWN
+timers:module:UNKNOWN
+callbacks:type:PsSetCreateProcessNotifyRoutine
+callbacks:type:PsSetCreateThreadNotifyRoutine
+callbacks:type:PsSetLoadImageNotifyRoutine
+callbacks:type:ZwCreateFile
+callbacks:type:ZwCreateSection
+callbacks:type:ZwMapViewOfSection
+callbacks:type:PsCreateSystemThread
+#########################################################################################
+# Suspicious filepaths
+#########################################################################################
+Suspicious_filepaths:tmp
+Suspicious_filepaths:temp
+Suspicious_filepaths:roaming
+#########################################################################################
+# Suspicious mutex (mutantscan)
+# The given namen will be search for as part of a string. (if name in string)
+#########################################################################################
+mutantscan:String:_AVIRA_:Name:Zeus
+mutantscan:String:__SYSTEM__:Name:Zeus
+mutantscan:String:svchost_test_started:Name:TDL3
+mutantscan:String:Flameddos:Name:Bifrost
+mutantscan:String:__b4ng__b4ng__38:Name:Tigger
+mutantscan:String:Jo1ezdsl:Name:Bankpatch.C
+mutantscan:String:Op1mutx9:Name:Sality
+mutantscan:String:Ap1mutx7:Name:Sality
+mutantscan:String:*exeM_*:Name:Sality
+mutantscan:String:Jhdheddfffffhjk5trh:Name:Allaple
+mutantscan:String:1337bot:Name:Spybot
+mutantscan:String:Rootz:Name:Sdbot
+#########################################################################################
+# MSF_Detect
+#########################################################################################
+msf:strings:stdapi
