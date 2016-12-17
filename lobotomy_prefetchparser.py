@@ -66,7 +66,10 @@ def start(database):
                     l.append(int(len(tmp)) + ltmp)
                     ltmp = ltmp + int(len(tmp)) + 1
 
-            if not line.startswith('---') and line != '' and 'ImportError' not in line and 'Prefetch file' not in line:
+            if not line.startswith('---') and line != '' \
+                    and 'ImportError' not in line \
+                    and 'Prefetch file' not in line\
+                    and 'Scanning for Prefetch files' not in line:
                 prefetchfile = line[0:l[0]].strip(' ')
                 executiontime = line[l[0]:l[1]].strip(' ')
                 executiontime = parse(executiontime).strftime("%Y-%m-%d %H:%M:%S")
