@@ -118,7 +118,9 @@ def hiberfil(database, profiles):
 
 def test_imagename(profiles):
     imageinfoprofile = ''
-    commandstrings = 'strings {} > {}-strings.txt'.format(imagename, imagename)
+    # commandstrings = 'strings {} > {}-strings.txt'.format(imagename, imagename)
+    # Dumping strings with offset so it can be re-used in other plugins.
+    commandstrings = 'strings -a -td {} > {}-strings.txt'.format(imagename, imagename)
     print 'Dumping strings from {}'.format(imagename)
     commands.getoutput(commandstrings)
 
