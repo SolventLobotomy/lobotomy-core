@@ -115,6 +115,9 @@ tabledata = {
     'coordinates': '(`id` int(11) NOT NULL AUTO_INCREMENT,\
                   `verified` varchar(32) COLLATE utf8_bin DEFAULT NULL,\
                   `coordinates` varchar(32) COLLATE utf8_bin DEFAULT NULL,\
+                  `offset` varchar(32) COLLATE utf8_bin DEFAULT NULL,\
+                  `pid` varchar(32) COLLATE utf8_bin DEFAULT NULL,\
+                  `process` varchar(32) COLLATE utf8_bin DEFAULT NULL,\
                   `value` blob,\
                   PRIMARY KEY (`id`)\
                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;',
