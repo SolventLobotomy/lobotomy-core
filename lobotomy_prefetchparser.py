@@ -59,7 +59,8 @@ def start(database):
 
     for line in voldata:
 
-        if not line.startswith('Volatility Foundation Volatility Framework'):
+        if not line.startswith('Volatility Foundation Volatility Framework')\
+                and not line.startswith('*** Failed to import'):
 
             if line.startswith('---'):
                 for tmp in line.split(' '):
@@ -67,9 +68,9 @@ def start(database):
                     ltmp = ltmp + int(len(tmp)) + 1
 
             if not line.startswith('---') and line != '' \
-                    and 'ImportError' not in line \
-                    and 'Prefetch file' not in line\
-                    and 'Scanning for Prefetch files' not in line:
+                    and not line.startswith('ImportError')\
+                    and not line.startswith('Prefetch file')\
+                    and not line.startswith('Scanning for Prefetch files'):
                 prefetchfile = line[0:l[0]].strip(' ')
                 executiontime = line[l[0]:l[1]].strip(' ')
                 executiontime = parse(executiontime).strftime("%Y-%m-%d %H:%M:%S")
