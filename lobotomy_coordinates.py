@@ -61,25 +61,3 @@ if __name__ == "__main__":
         print "Usage: {} <databasename>".format(sys.argv[0])
     else:
         start(sys.argv[1])
-
-#
-# # strings /dumps/Win7SP1x86_IEhist_geocoord.raw | python test_grep.py
-#
-#
-# import sys
-# import re
-#
-# re_coord = re.compile('[0-9]{1,2}[.][0-9]{6},[0-9]{1,2}[.][0-9]{6}')
-#
-# with sys.stdin as f:
-# 	for line in f:
-# 		clean_line = line.strip()
-# 		match_iterator = re_coord.finditer(clean_line)
-# 		for match in match_iterator:
-# 			match_token = match.group(0)
-# 			print '|{}|,|{}|'.format(match_token, clean_line)
-# #			print "|%s|,|%s|" % (match_token, clean_line)
-#
-#
-#
-#
