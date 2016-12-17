@@ -33,6 +33,7 @@ DEBUG = False
 
 
 def start(database):
+    global bki
     case_settings, imagename, imagetype, casedir, plugin_dir = Lobotomy.register_plugin('start', database, plugin)
     try:
         bki = int(Lobotomy.bulkinsert)
@@ -69,6 +70,8 @@ def start(database):
 
     Lobotomy.register_plugin('stop', database, plugin)
 
+    Lobotomy.plugin_log('stop', database, plugin, casedir, command)
+
 
 def parse_voldata(imagename, database):
     sql_counter = 0
@@ -84,12 +87,6 @@ def parse_voldata(imagename, database):
 
                 for i in range(len(listitem)):
                     listitem[i] = Lobotomy.escchar(listitem[i])
-
-                # Lobotomy.exec_sql_query("INSERT INTO memtimeliner (id, date, size, type, mode, uid, gid, "
-                #             "meta, filename)VALUES (0, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format
-                #             (listitem[0], listitem[1], listitem[2], listitem[3], listitem[4],
-                #             listitem[5], listitem[6], listitem[7]), database)
-
 
                 sql_counter += 1
                 sql_jobs.append((
@@ -109,25 +106,14 @@ def parse_voldata(imagename, database):
                     sql_jobs = []
                     Lobotomy.pl('Plugin: {}, Database: {}, lines processed: {}'.
                                 format(plugin, database, sql_counter))
-
     save_sql(sql_jobs, plugin, database)
     sql_jobs = []
     Lobotomy.pl('Plugin: {}, Database: {}, lines processed: {}'.
                 format(plugin, database, sql_counter))
 
-# Lobotomy.register_plugin('stop', database, plugin)
-#
-# Lobotomy.plugin_log('stop', database, plugin, casedir, command)
-
-
-                # Lobotomy.exec_sql_query("INSERT INTO memtimeliner (id, date, size, type, mode, uid, gid, "
-                #             "meta, filename)VALUES (0, '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format
-                #             (listitem[0], listitem[1], listitem[2], listitem[3], listitem[4],
-                #             listitem[5], listitem[6], listitem[7]), database)
-
 
 def save_sql(data, plugin, database):
-    SQL_cmd = 'INSERT INTO {} (`date`, `size`, `type`, `mode`, `uid`, `gid`, `meta`) values'.format(plugin)
+    SQL_cmd = 'INSERT INTO {} (`date`, `size`, `type`, `mode`, `uid`, `gid`, `meta`, `filename`) values'.format(plugin)
     SQL_cmd += str(data).strip('[]')
     Lobotomy.exec_sql_query(SQL_cmd, database)
 
