@@ -103,6 +103,7 @@ def start(database):
 
     Lobotomy.plugin_stop('pe_scanner', database)
     Lobotomy.plugin_pct('pe_scanner', database, 100)
+    Lobotomy.register_plugin('stop', database, 'exifinfo')
 
     hashtable(Lobotomy.get_databasedata('*', 'pe_scanner', database), database)
 
