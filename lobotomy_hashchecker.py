@@ -88,7 +88,7 @@ def start(database):
             sql_cmd = "INSERT INTO warnings VALUES (0, '{}', '{}')".format(plugin, warning)
             Lobotomy.exec_sql_query(sql_cmd, database)
 
-        Lobotomy.register_plugin('stop', database, 'Warnings')
+        Lobotomy.register_plugin('stop', database, 'warnings')
 
 
 if __name__ == "__main__":
