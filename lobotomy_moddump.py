@@ -43,6 +43,7 @@ def start(database):
     parse_voldata(vollog, database, dumpdir)
 
     Lobotomy.register_plugin('stop', database, plugin)
+    Lobotomy.register_plugin('stop', database, 'exifinfo')
 
 
 def parse_voldata(log, database, dumpdir):
