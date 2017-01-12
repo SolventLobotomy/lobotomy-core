@@ -37,7 +37,6 @@ def start(database):
 
 def parse_voldata(log, database):
     items = log.split('\n')
-'
 
     count = 0
     counter = 0
