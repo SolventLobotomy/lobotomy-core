@@ -175,7 +175,8 @@ def parse_voldata(vollog, database):
         for warning in warnings:
             sql_cmd = "INSERT INTO warnings VALUES (0, '{}', '{}')".format(plugin, warning)
             Lobotomy.exec_sql_query(sql_cmd, database)
-        Lobotomy.register_plugin('stop', database, 'Warnings')
+    if len(warnings) > 0:
+        Lobotomy.register_plugin('stop', database, 'warnings')
 
 
 if __name__ == "__main__":

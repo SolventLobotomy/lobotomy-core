@@ -122,7 +122,7 @@ def parse_voldata(log, database):
             sql_cmd = "INSERT INTO warnings VALUES (0, '{}', '{}')".format(plugin, line)
             Lobotomy.exec_sql_query(sql_cmd, database)
 
-        Lobotomy.register_plugin('stop', database, 'Warnings')
+        Lobotomy.register_plugin('stop', database, 'warnings')
 
 
 
