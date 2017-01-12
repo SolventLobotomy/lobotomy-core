@@ -18,6 +18,7 @@ def start(database, folder):
     imagename = case_settings["filepath"]
     imagetype = case_settings["profile"]
     casedir = case_settings["directory"]
+    yara_rules = Lobotomy.yararules + 'index.yara'
     sql_prefix = "INSERT INTO yarascan VALUES (0, "
     counter = 0
     count = 0
@@ -31,7 +32,7 @@ def start(database, folder):
     except:
         pass
 
-    command = "yara yara_rules/index.yara " + database
+    command = "yara {} {}".format(yara_rules, database)
     if DEBUG:
         print "Write log: " + database + ", Start: " + command
         print "Write log: " + casedir + ", Start: " + command
@@ -60,7 +61,7 @@ def start(database, folder):
                         yara_description = ''
                         count = count +1
                         filename = os.path.join(subdir1, file)
-                        command = "yara yara_rules/index.yara {} -m -s -w".format(filename)
+                        command = "yara {} {} -m -s -w".format(yara_rules, filename)
                         # Yara -w: disable warnings
                         # Yara -m: print metadata.
                         # Yara -s: print matching strings.
@@ -119,7 +120,7 @@ def start(database, folder):
 
                                         print 'Error sql query: ' + sql_line + " - " + database
 
-    command = "yara yara_rules/index.yara {} -m -s -w".format(imagename)
+    command = "yara {} {} -m -s -w".format(yara_rules, imagename)
     # Yara -w: disable warnings
     # Yara -m: print metadata.
     # Yara -s: print matching strings.
