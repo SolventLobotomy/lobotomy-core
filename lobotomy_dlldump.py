@@ -59,6 +59,8 @@ def start(database):
     parse_voldata(vollog, database, dumpdir)
 
     Lobotomy.register_plugin('stop', database, plugin)
+    Lobotomy.register_plugin('stop', database, 'exifinfo')
+
 
     # Register exifinfo table in table plugins to make it visible on the webpage
 
