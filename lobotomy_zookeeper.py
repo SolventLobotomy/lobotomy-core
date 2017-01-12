@@ -187,6 +187,7 @@ def start(database):
 
     Lobotomy.plugin_stop(plugin, database)
     Lobotomy.plugin_pct(plugin, database, 100)
+    Lobotomy.register_plugin('stop', database, 'exifinfo')
 
     with open('{}-zookeeperlog.txt'.format(imagename)) as f:
         log = f.read()
