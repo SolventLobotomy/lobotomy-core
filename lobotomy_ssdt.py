@@ -93,7 +93,7 @@ def parse_voldata(log, database):
 
         try:
             if pct != pcttmp:
-                print "plugin: {} - Database: {} - pct done: {}".format(plugin, database, pct)
+                Lobotomy.pl("plugin: {} - Database: {} - pct done: {}".format(plugin, database, pct))
                 Lobotomy.plugin_pct(plugin, database, pct)
         except:
             pass
@@ -105,7 +105,7 @@ def parse_voldata(log, database):
             sql_cmd = "INSERT INTO warnings VALUES (0, '{}', '{}')".format(plugin, line)
             Lobotomy.exec_sql_query(sql_cmd, database)
 
-        Lobotomy.register_plugin('stop', database, 'Warnings')
+        Lobotomy.register_plugin('stop', database, 'warnings')
 
 
 if __name__ == "__main__":
