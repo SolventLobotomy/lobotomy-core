@@ -60,7 +60,7 @@ def autostart(database):
         # Lobotomy.add_to_queue('python {}vol_yarascan.py {} index.yara'.format(Lobotomy.plugin_dir, database), 10)
                               # description='Volatility yara scan')
 
-        Lobotomy.add_to_queue('python {}yarascan.py {}'.format(Lobotomy.plugin_dir, database), 10)
+        Lobotomy.add_to_queue('python {}lobotomy_yarascan.py {}'.format(Lobotomy.plugin_dir, database), 10)
                                 # description='Yarascan')
 
         Lobotomy.add_to_queue('python {}lobotomy_zookeeper.py {}'.format(Lobotomy.plugin_dir, database), 12)
