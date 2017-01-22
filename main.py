@@ -1107,8 +1107,21 @@ class Lobotomy:
         If there is no inifile, use the old method.
         """
         filename = os.path.dirname(os.path.abspath(__file__)) + '/lobotomy.ini'
+
+        self.dump_dir = ''
+        self.home_dir = ''
+        self.copy_dir = ''
+        self.plugin_dir = ''
+        self.yararules = ''
+        self.logfile = ''
+        self.caselog = ''
+        self.lobotomy_plugindir = ''
+        self.volatility_plugindir = ''
+        self.bulkinsert = ''
+
         try:
             self.mysql = []
+            self.lobotomy_settings = {}
             with open(filename) as f:
                 for line in f:
                     if line.startswith('dumpdir: '):
@@ -1119,15 +1132,11 @@ class Lobotomy:
                         self.copy_dir = line.split(': ')[1].strip('\n')
                     if line.startswith('plugindir: '):
                         self.plugin_dir = line.split(': ')[1].strip('\n')
-                    # if line.startswith('database: '):
-                    #     self.db_type(line.split(': ')[1].strip('\n'))
                     if line.startswith('mysqlhost: '):
                         self.mysql.append(line.split(': ')[1].strip('\n'))
                     if line.startswith('mysql_username: '):
                         self.mysql.append(line.split(': ')[1].strip('\n'))
                     if line.startswith('mysql_password: '):
-                        self.mysql.append(line.split(': ')[1].strip('\n'))
-                    if line.startswith('mysql_template: '):
                         self.mysql.append(line.split(': ')[1].strip('\n'))
                     if line.startswith('yararules: '):
                         self.yararules = line.split(': ')[1].strip('\n')
@@ -1135,9 +1144,10 @@ class Lobotomy:
                         self.logfile = line.split(': ')[1].strip('\n')
                     if line.startswith('lobotomy_caselogdir: '):
                         self.caselog = line.split(': ')[1].strip('\n')
-                    # if line.startswith('lobotomy_triggers: '):
-                    #     self.triggerfile = line.split(': ')[1].strip('\n')
-
+                    if line.startswith('lobotomy_plugindir: '):
+                        self.lobotomy_plugindir = line.split(': ')[1].strip('\n')
+                    if line.startswith('volatility_plugindir: '):
+                        self.volatility_plugindir = line.split(': ')[1].strip('\n')
                     if line.startswith('bulkinsert: '):
                         self.bulkinsert = line.split(': ')[1].strip('\n')
 
@@ -1153,10 +1163,22 @@ class Lobotomy:
             print 'mysqlhost: localhost'
             print 'mysql_username: root'
             print 'mysql_password: p@ssw0rd'
-            print 'mysql_template: template'
             print 'yararules: /srv/lobotomy/lob_scripts/yara_rules/'
             print 'lobotomy_logfile: /srv/lobotomy/lobotomy.log'
             print 'lobotomy_caselogdir: lobotomy.log\n'
+
+        self.lobotomy_settings = {
+            'dumpdir': self.dump_dir,
+            'homedir': self.home_dir,
+            'copydir': self.copy_dir,
+            'plugindir': self.plugin_dir,
+            'yararulesdir': self.yararules,
+            'lobotomy_logfile': self.logfile,
+            'lobotomy_caselogdir': self.caselog,
+            'lobotomy_plugindir': self.lobotomy_plugindir,
+            'volatility_plugindir': self.volatility_plugindir,
+            'bulkinsert_value': self.bulkinsert
+                                    }
 
     def write_to_main_log(self, database, message):
         """
@@ -1374,14 +1396,15 @@ class Lobotomy:
 
     def plugin_start(self, plugin, database):
         # Test if database.table exists
-        try:
-            self.exec_sql_query("SELECT * FROM {}".format(plugin), database)
-        except:
-            execute = "mysqldump -u {} -p{} template {} | mysql -u {} -p{} {}".format(self.mysql[1], self.mysql[2], plugin, self.mysql[1], self.mysql[2], database)
-            try:
-                os.system(execute)
-            except:
-                print "------ ERROR while populating database! ------"
+        self.exec_sql_query("SELECT * FROM {}".format(plugin), database)
+        # try:
+        #     self.exec_sql_query("SELECT * FROM {}".format(plugin), database)
+        # except:
+        #     execute = "mysqldump -u {} -p{} template {} | mysql -u {} -p{} {}".format(self.mysql[1], self.mysql[2], plugin, self.mysql[1], self.mysql[2], database)
+        #     try:
+        #         os.system(execute)
+        #     except:
+        #         print "------ ERROR while populating database! ------"
 
         # Test if running plugin is in table plugins
         data = None
@@ -1542,9 +1565,16 @@ class Lobotomy:
         #     print 'SQL Error: {}'.format(sql_cmd)
 
     def pl(self, printline):
-        rows, columns = os.popen('stty size', 'r').read().split()
-        if len(printline) > int(columns) - 4:
-            printline = '{}...{}'.format(printline[0:int(columns) - 12], printline[(len(printline) - 9):len(printline)])
+        # Getting screensize and print line within the screensize, cutting the chars that falls out of the screensize.
+        try:
+            # stty size fails when running with supervisor.
+            # When watchdirectory and processqueue is started with supervisor, just print the output.
+            # Supervisor can write the stdout to a logfile.
+            rows, columns = os.popen('stty size', 'r').read().split()
+            if len(printline) > int(columns) - 4:
+                printline = '{}...{}'.format(printline[0:int(columns) - 12], printline[(len(printline) - 9):len(printline)])
+        except:
+            pass
         print printline
 
     def register_plugin(self, start_stop, database, plugin):
