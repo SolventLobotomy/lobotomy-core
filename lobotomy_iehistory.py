@@ -14,32 +14,25 @@ plugin = "iehistory"
 
 def start(database):
     case_settings, imagename, imagetype, casedir, plugin_dir = Lobotomy.register_plugin('start', database, plugin)
-    command25 = 'vol.py -f {} --profile={} {} --output=greptext'.format(imagename, imagetype, plugin)
-    command24 = 'vol.py -f {} --profile={} {}'.format(imagename, imagetype, plugin)
-    Lobotomy.plugin_log('start', database, plugin, casedir, command24)
+    command = 'vol.py -f {} --profile={} {} --output=greptext'.format(imagename, imagetype, plugin)
+    Lobotomy.plugin_log('start', database, plugin, casedir, command)
 
     Lobotomy.pl('Running Volatility - {}, please wait.'.format(plugin))
 
-    vollog = commands.getoutput('vol.py -h')
-    if vollog.startswith('Volatility Foundation Volatility Framework 2.5'):
-        volver = '2.5'
-        vollog = commands.getoutput(command25)
-    else:
-        volver = '2.4'
-        vollog = commands.getoutput(command24)
+    vollog = commands.getoutput(command)
 
     Lobotomy.save_log(imagename, plugin, vollog)
     Lobotomy.hashdata(database, plugin, vollog)
 
-    Lobotomy.plugin_log('stop', database, plugin, casedir, command24)
+    Lobotomy.plugin_log('stop', database, plugin, casedir, command)
     Lobotomy.pl('Parsing data from plugin: {}...'.format(plugin))
 
-    parse_voldata(vollog, database, volver)
+    parse_voldata(vollog, database)
 
     Lobotomy.register_plugin('stop', database, plugin)
 
 
-def parse_voldata(log, database, volver):
+def parse_voldata(log, database):
     data = log.split('\n')
     sql_data = []
     lp = []
@@ -55,16 +48,12 @@ def parse_voldata(log, database, volver):
             line = Lobotomy.escchar(line)
 
             # Volatility Version 2.5
-            if volver == '2.5':
-                if line.startswith('>|'):
-                    tmp, Process, PID, CacheType, Offset, RecordLength, Location, LastModified, LastAccessed, Length,\
-                    FileOffset, DataOffset, DataSize, File, Data = line.split('|')
-                    sql_data.append((Process, PID, CacheType, Offset, RecordLength, Location, LastModified,
-                                     LastAccessed, Length, FileOffset, DataOffset, DataSize, File, Data))
-
-            # Volatility Version 2.4
-            if volver == '2.4':
-                pass
+            # if volver == '2.5':
+            if line.startswith('>|'):
+                tmp, Process, PID, CacheType, Offset, RecordLength, Location, LastModified, LastAccessed, Length,\
+                FileOffset, DataOffset, DataSize, File, Data = line.split('|')
+                sql_data.append((Process, PID, CacheType, Offset, RecordLength, Location, LastModified,
+                                 LastAccessed, Length, FileOffset, DataOffset, DataSize, File, Data))
 
     sql_prefix = "INSERT INTO {} VALUES (0".format(plugin)
 

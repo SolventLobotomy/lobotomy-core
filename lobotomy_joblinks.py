@@ -14,32 +14,25 @@ plugin = "joblinks"
 
 def start(database):
     case_settings, imagename, imagetype, casedir, plugin_dir = Lobotomy.register_plugin('start', database, plugin)
-    command25 = 'vol.py -f {} --profile={} {} --output=greptext'.format(imagename, imagetype, plugin)
-    command24 = 'vol.py -f {} --profile={} {}'.format(imagename, imagetype, plugin)
-    Lobotomy.plugin_log('start', database, plugin, casedir, command24)
+    command = 'vol.py -f {} --profile={} {} --output=greptext'.format(imagename, imagetype, plugin)
+    Lobotomy.plugin_log('start', database, plugin, casedir, command)
 
     Lobotomy.pl('Running Volatility - {}, please wait.'.format(plugin))
 
-    vollog = commands.getoutput('vol.py -h')
-    if vollog.startswith('Volatility Foundation Volatility Framework 2.5'):
-        volver = '2.5'
-        vollog = commands.getoutput(command25)
-    else:
-        volver = '2.4'
-        vollog = commands.getoutput(command24)
+    vollog = commands.getoutput(command)
 
     Lobotomy.save_log(imagename, plugin, vollog)
     Lobotomy.hashdata(database, plugin, vollog)
 
-    Lobotomy.plugin_log('stop', database, plugin, casedir, command24)
+    Lobotomy.plugin_log('stop', database, plugin, casedir, command)
     Lobotomy.pl('Parsing data from plugin: {}...'.format(plugin))
 
-    parse_voldata(vollog, database, volver)
+    parse_voldata(vollog, database)
 
     Lobotomy.register_plugin('stop', database, plugin)
 
 
-def parse_voldata(log, database, volver):
+def parse_voldata(log, database):
     data = log.split('\n')
     sql_data = []
     lp = []
@@ -54,27 +47,11 @@ def parse_voldata(log, database, volver):
             line = line.strip("\n")
             line = Lobotomy.escchar(line)
 
-            # Volatility Version 2.5
-            if volver == '2.5':
-                if line.startswith('>|'):
-                    tmp, offset, name, pid, ppid, sess, jobsess, wow64, total, active, term, \
-                                    joblink, process = line.split('|')
-                    sql_data.append((offset, name, pid, ppid, sess, jobsess, wow64, total, active, term,
-                                     joblink, process))
-
-            # Volatility Version 2.4
-            if volver == '2.4':
-                tmpl = 0
-                counter = 0
-                data = []
-                for l in lp:
-                    counter += 1
-                    if len(lp) == counter:
-                        data.append(str(line[tmpl:]))
-                    else:
-                        data.append(line[tmpl:tmpl+l].strip())
-                        tmpl += l
-                sql_data.append(data)
+            if line.startswith('>|'):
+                tmp, offset, name, pid, ppid, sess, jobsess, wow64, total, active, term, \
+                                joblink, process = line.split('|')
+                sql_data.append((offset, name, pid, ppid, sess, jobsess, wow64, total, active, term,
+                                 joblink, process))
 
     sql_prefix = "INSERT INTO {} VALUES (0".format(plugin)
     for sql_line in sql_data:
